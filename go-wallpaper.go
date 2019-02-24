@@ -3,14 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-	// "os/user"
+	"os/exec"
 	"path/filepath"
-	// "strconv"
-	// "strings",
 	"runtime"
+	"strings"
 )
-
-// TODO - something magical is going to happen here...
 
 func CheckOSEnviroment() {
 	if runtime.GOOS == "windows" {
@@ -20,11 +17,18 @@ func CheckOSEnviroment() {
 	} else if runtime.GOOS == "darwin" {
 		fmt.Println("Running under Mac OS... ")
 	}
+}
 
+func GetCurrentWallpaper() (string, error) {
+	stdout, err := exec.Command("osascript", "-e", `tell application "Finder" to get POSIX path of (get desktop picture as alias)`).Output()
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(string(stdout)), nil
 }
 
 func GetDefaultLocation() string {
-
 	const desktopWallpaperFolder = "/Library/Desktop Pictures"
 	root := desktopWallpaperFolder
 
@@ -66,4 +70,12 @@ func main() {
 	wallpaperLocation := GetDefaultLocation()
 
 	GetListOfPictures(wallpaperLocation)
+
+	currentWallPaper, err := GetCurrentWallpaper()
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Current Desktop Wallpaper: ", currentWallPaper)
 }
