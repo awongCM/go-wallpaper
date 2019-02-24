@@ -35,7 +35,18 @@ func GetListOfPictures(rootFolder string) {
 	var files []string
 	fmt.Println("rootFolder: ", rootFolder)
 
-	err := filepath.Walk(rootFolder, func(path string, info os.FileInfo, err error) error {
+	var skipFolders [2]string
+
+	skipFolders[0] = ".localizations"
+	skipFolders[1] = ".thumbnails"
+
+	err := filepath.Walk(rootFolder, func(path string, fileInfo os.FileInfo, err error) error {
+		for _, unwantedFolder := range skipFolders {
+			if fileInfo.IsDir() && fileInfo.Name() == unwantedFolder {
+				return filepath.SkipDir
+			}
+		}
+
 		files = append(files, path)
 		return nil
 	})
