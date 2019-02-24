@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// TODOS ....
+
 func CheckOSEnviroment() {
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running under Windows OS... ")
