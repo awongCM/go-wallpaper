@@ -16,5 +16,8 @@ It is assumed you have the latest Go runtime libraries in your system in order t
 ## Future Use Cases
 * Make this program cross-platform OS compatible ie Windows and Linux
 
+## TODOS
+* Clean up go-lint issues
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
