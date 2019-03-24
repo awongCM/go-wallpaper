@@ -12,6 +12,14 @@ import (
 	"time"
 )
 
+// We have few time options here
+const (
+	TIMER_IN_MILLISECONDS time.Duration = 20 * time.Millisecond
+	TIMER_IN_SECONDS      time.Duration = 10 * time.Second
+	TIMER_IN_MINUTES      time.Duration = 5 * time.Minute
+	TIMER_IN_HOURS        time.Duration = 1 * time.Hour
+)
+
 func CheckOSEnviroment() {
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running under Windows OS... ")
@@ -32,8 +40,6 @@ func GetCurrentWallpaper() (string, error) {
 }
 
 func SetCurrentWallpaper(imageFileLocation string) (string, error) {
-
-	fmt.Println("ready to set wallpaper...")
 	stdout, err := exec.Command("osascript", "-e", `tell application "System Events" to set picture of (reference to current desktop) to "`+imageFileLocation+`"`).Output()
 	if err != nil {
 		return "", err
@@ -49,7 +55,7 @@ func GetDefaultLocation() string {
 	return root
 }
 
-func GetListOfPictures(rootFolder string) {
+func GetListOfPictures(rootFolder string) []string {
 	var files []string
 	fmt.Println("rootFolder: ", rootFolder)
 
@@ -73,7 +79,11 @@ func GetListOfPictures(rootFolder string) {
 		panic(err)
 	}
 
-	// TODO - need to place in another module for this
+	return files
+}
+
+func AlternateWallPapers(wallpapper_files []string) {
+
 	// Keyboard interrupt here
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -85,27 +95,19 @@ func GetListOfPictures(rootFolder string) {
 
 	// loop forever until keyboard interrupt signal kicks in
 	for {
-		for _, imageFile := range files {
-			fmt.Println("imageFile: ", imageFile)
+		for _, wallpaperFile := range wallpapper_files {
+			fmt.Println("wallpaperFile: ", wallpaperFile)
 
-			SetCurrentWallpaper(imageFile)
+			SetCurrentWallpaper(wallpaperFile)
 
 			// test timer to set different wallpaper
-			time.Sleep(20 * time.Millisecond)
+			time.Sleep(TIMER_IN_MILLISECONDS)
 		}
 	}
 }
 
 func endItHere() {
-	fmt.Println("just cancelled...")
-}
-
-func main() {
-	CheckOSEnviroment()
-
-	wallpaperLocation := GetDefaultLocation()
-
-	GetListOfPictures(wallpaperLocation)
+	fmt.Println("got keyboard interrupt...")
 
 	currentWallPaper, err := GetCurrentWallpaper()
 
@@ -114,4 +116,15 @@ func main() {
 	}
 
 	fmt.Println("Current Desktop Wallpaper: ", currentWallPaper)
+}
+
+func main() {
+	CheckOSEnviroment()
+
+	wallpaperLocation := GetDefaultLocation()
+
+	allWallpaperFiles := GetListOfPictures(wallpaperLocation)
+
+	AlternateWallPapers(allWallpaperFiles)
+
 }
