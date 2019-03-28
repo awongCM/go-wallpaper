@@ -20,14 +20,15 @@ const (
 	TIMER_IN_HOURS        time.Duration = 1 * time.Hour
 )
 
+//RuntimeOSMap definitions here
+var RuntimeOSMap = map[string]string{
+	"windows": "Running under Windows OS...",
+	"linux":   "Running under Unix/Linux OS...",
+	"darwin":  "Running under Mac OS...",
+}
+
 func CheckOSEnviroment() {
-	if runtime.GOOS == "windows" {
-		fmt.Println("Running under Windows OS... ")
-	} else if runtime.GOOS == "linux" {
-		fmt.Println("Running under Unix/Linux OS... ")
-	} else if runtime.GOOS == "darwin" {
-		fmt.Println("Running under Mac OS... ")
-	}
+	fmt.Println(RuntimeOSMap[runtime.GOOS])
 }
 
 func GetCurrentWallpaper() (string, error) {
