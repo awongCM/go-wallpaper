@@ -50,6 +50,11 @@ func SetCurrentWallpaper(imageFileLocation string) (string, error) {
 }
 
 func GetDefaultLocation() string {
+	// TODO
+	// Windows location - %SystemRoot%\Web\Wallpaper
+	// Mac - /Library/Desktop Pictures/
+	// Linux - /usr/share/backgrounds
+
 	const desktopWallpaperFolder = "/Library/Desktop Pictures"
 	root := desktopWallpaperFolder
 
