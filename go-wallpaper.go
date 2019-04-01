@@ -27,6 +27,12 @@ var RuntimeOSMap = map[string]string{
 	"darwin":  "Running under Mac OS...",
 }
 
+var DesktopWallPaperLocation = map[string]string{
+	"windows": `%SystemRoot%\Web\Wallpaper`,
+	"linux":   "/usr/share/backgrounds",
+	"darwin":  "/Library/Desktop Pictures/",
+}
+
 func CheckOSEnviroment() {
 	fmt.Println(RuntimeOSMap[runtime.GOOS])
 }
@@ -50,15 +56,8 @@ func SetCurrentWallpaper(imageFileLocation string) (string, error) {
 }
 
 func GetDefaultLocation() string {
-	// TODO
-	// Windows location - %SystemRoot%\Web\Wallpaper
-	// Mac - /Library/Desktop Pictures/
-	// Linux - /usr/share/backgrounds
 
-	const desktopWallpaperFolder = "/Library/Desktop Pictures"
-	root := desktopWallpaperFolder
-
-	return root
+	return DesktopWallPaperLocation[runtime.GOOS]
 }
 
 func GetListOfPictures(rootFolder string) []string {
