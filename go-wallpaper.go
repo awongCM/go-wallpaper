@@ -42,6 +42,7 @@ func CheckOSEnviroment() string {
 	return OSMap[runtime.GOOS].osRuntime
 }
 
+// TODOS - do one for windows and linux
 func GetCurrentWallpaper() (string, error) {
 	stdout, err := exec.Command("osascript", "-e", `tell application "Finder" to get POSIX path of (get desktop picture as alias)`).Output()
 	if err != nil {
@@ -51,6 +52,7 @@ func GetCurrentWallpaper() (string, error) {
 	return strings.TrimSpace(string(stdout)), nil
 }
 
+// TODOS - do one for windows and linux
 func SetCurrentWallpaper(imageFileLocation string) (string, error) {
 	stdout, err := exec.Command("osascript", "-e", `tell application "System Events" to set picture of (reference to current desktop) to "`+imageFileLocation+`"`).Output()
 	if err != nil {
