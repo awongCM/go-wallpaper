@@ -20,21 +20,26 @@ const (
 	TIMER_IN_HOURS        time.Duration = 1 * time.Hour
 )
 
-//RuntimeOSMap definitions here
-var RuntimeOSMap = map[string]string{
-	"windows": "Running under Windows OS...",
-	"linux":   "Running under Unix/Linux OS...",
-	"darwin":  "Running under Mac OS...",
+// OperatingSystem ...
+type OperatingSystem struct {
+	osRuntime, desktopWallPaperLocation string
 }
 
-var DesktopWallPaperLocation = map[string]string{
-	"windows": `%SystemRoot%\Web\Wallpaper`,
-	"linux":   "/usr/share/backgrounds",
-	"darwin":  "/Library/Desktop Pictures/",
+// OSMap ...
+var OSMap = map[string]OperatingSystem{
+	"windows": OperatingSystem{
+		"windows", `%SystemRoot%\Web\Wallpaper`,
+	},
+	"linux": OperatingSystem{
+		"linux", "/usr/share/backgrounds",
+	},
+	"darwin": OperatingSystem{
+		"darwin", "/Library/Desktop Pictures/",
+	},
 }
 
 func CheckOSEnviroment() {
-	fmt.Println(RuntimeOSMap[runtime.GOOS])
+	fmt.Println(OSMap[runtime.GOOS].osRuntime)
 }
 
 func GetCurrentWallpaper() (string, error) {
@@ -57,7 +62,7 @@ func SetCurrentWallpaper(imageFileLocation string) (string, error) {
 
 func GetDefaultLocation() string {
 
-	return DesktopWallPaperLocation[runtime.GOOS]
+	return OSMap[runtime.GOOS].desktopWallPaperLocation
 }
 
 func GetListOfPictures(rootFolder string) []string {
