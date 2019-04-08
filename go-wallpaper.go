@@ -23,18 +23,22 @@ const (
 // OperatingSystem ...
 type OperatingSystem struct {
 	osRuntime, desktopWallPaperLocation string
+	executableName, firstArg, secondArg string
 }
 
 // OSMap ...
 var OSMap = map[string]OperatingSystem{
 	"windows": OperatingSystem{
 		"windows", `%SystemRoot%\Web\Wallpaper`,
+		"reg", "query", `"HKCU\Software\Microsoft\Internet Explorer\Desktop\General"`,
 	},
 	"linux": OperatingSystem{
 		"linux", "/usr/share/backgrounds",
+		"gsettings", "get", `org.gnome.desktop.background picture-uri`,
 	},
 	"darwin": OperatingSystem{
 		"darwin", "/Library/Desktop Pictures/",
+		"osascript", "-e", `tell application "Finder" to get POSIX path of (get desktop picture as alias)`,
 	},
 }
 
@@ -42,9 +46,8 @@ func CheckOSEnviroment() string {
 	return OSMap[runtime.GOOS].osRuntime
 }
 
-// TODOS - do one for windows and linux
 func GetCurrentWallpaper() (string, error) {
-	stdout, err := exec.Command("osascript", "-e", `tell application "Finder" to get POSIX path of (get desktop picture as alias)`).Output()
+	stdout, err := exec.Command(OSMap[runtime.GOOS].executableName, OSMap[runtime.GOOS].firstArg, OSMap[runtime.GOOS].secondArg).Output()
 	if err != nil {
 		return "", err
 	}
