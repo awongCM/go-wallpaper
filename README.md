@@ -18,6 +18,7 @@ It is assumed you have the latest Go runtime libraries in your system in order t
 
 ## TODOS
 * Clean up go-lint issues
+* Add some decent unit testing tools
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
