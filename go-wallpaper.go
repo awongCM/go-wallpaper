@@ -14,7 +14,7 @@ import (
 
 // We have few time options here
 const (
-	TIMER_IN_MILLISECONDS time.Duration = 20 * time.Millisecond
+	TIMER_IN_MILLISECONDS time.Duration = 200 * time.Millisecond
 	TIMER_IN_SECONDS      time.Duration = 10 * time.Second
 	TIMER_IN_MINUTES      time.Duration = 5 * time.Minute
 	TIMER_IN_HOURS        time.Duration = 1 * time.Hour
@@ -22,23 +22,21 @@ const (
 
 // OperatingSystem ...
 type OperatingSystem struct {
-	osRuntime, desktopWallPaperLocation string
-	executableName, firstArg, secondArg string
+	osRuntime, desktopWallPaperLocation    string
+	executableName, getCommand, setCommand string
 }
 
 // OSMap ...
 var OSMap = map[string]OperatingSystem{
-	"windows": OperatingSystem{
-		"windows", `%SystemRoot%\Web\Wallpaper`,
-		"reg", "query", `"HKCU\Software\Microsoft\Internet Explorer\Desktop\General"`,
-	},
 	"linux": OperatingSystem{
 		"linux", "/usr/share/backgrounds",
-		"gsettings", "get", `org.gnome.desktop.background picture-uri`,
+		"gsettings", "get org.gnome.desktop.background picture-uri",
+		"set org.gnome.desktop.background picture-uri",
 	},
 	"darwin": OperatingSystem{
 		"darwin", "/Library/Desktop Pictures/",
-		"osascript", "-e", `tell application "Finder" to get POSIX path of (get desktop picture as alias)`,
+		"osascript", `-e tell application "Finder" to get POSIX path of (get desktop picture as alias)`,
+		`-e tell application "System Events" to set picture of (reference to current desktop) to`,
 	},
 }
 
@@ -47,7 +45,7 @@ func CheckOSEnviroment() string {
 }
 
 func GetCurrentWallpaper() (string, error) {
-	stdout, err := exec.Command(OSMap[runtime.GOOS].executableName, OSMap[runtime.GOOS].firstArg, OSMap[runtime.GOOS].secondArg).Output()
+	stdout, err := exec.Command(OSMap[runtime.GOOS].executableName, OSMap[runtime.GOOS].getCommand).Output()
 	if err != nil {
 		return "", err
 	}
@@ -57,7 +55,9 @@ func GetCurrentWallpaper() (string, error) {
 
 // TODOS - do one for windows and linux
 func SetCurrentWallpaper(imageFileLocation string) (string, error) {
-	stdout, err := exec.Command("osascript", "-e", `tell application "System Events" to set picture of (reference to current desktop) to "`+imageFileLocation+`"`).Output()
+	var setImageFileCommand = OSMap[runtime.GOOS].setCommand + `"` + imageFileLocation + `"`
+
+	stdout, err := exec.Command(OSMap[runtime.GOOS].executableName, setImageFileCommand).Output()
 	if err != nil {
 		return "", err
 	}
