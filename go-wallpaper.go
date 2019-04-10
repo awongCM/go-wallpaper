@@ -40,10 +40,12 @@ var OSMap = map[string]OperatingSystem{
 	},
 }
 
+// CheckOSEnviroment
 func CheckOSEnviroment() string {
 	return OSMap[runtime.GOOS].osRuntime
 }
 
+// GetCurrentWallpaper
 func GetCurrentWallpaper() (string, error) {
 	stdout, err := exec.Command(OSMap[runtime.GOOS].executableName, OSMap[runtime.GOOS].getCommand).Output()
 	if err != nil {
@@ -53,7 +55,7 @@ func GetCurrentWallpaper() (string, error) {
 	return strings.TrimSpace(string(stdout)), nil
 }
 
-// TODOS - do one for windows and linux
+// SetCurrentWallpaper
 func SetCurrentWallpaper(imageFileLocation string) (string, error) {
 	var setImageFileCommand = OSMap[runtime.GOOS].setCommand + `"` + imageFileLocation + `"`
 
@@ -65,11 +67,13 @@ func SetCurrentWallpaper(imageFileLocation string) (string, error) {
 	return strings.TrimSpace(string(stdout)), nil
 }
 
+// GetDefaultLocation
 func GetDefaultLocation() string {
 
 	return OSMap[runtime.GOOS].desktopWallPaperLocation
 }
 
+// GetListOfPictures
 func GetListOfPictures(rootFolder string) []string {
 	var files []string
 	fmt.Println("rootFolder: ", rootFolder)
@@ -97,6 +101,7 @@ func GetListOfPictures(rootFolder string) []string {
 	return files
 }
 
+// AlternateWallPapers
 func AlternateWallPapers(wallpapper_files []string) {
 
 	// Keyboard interrupt here
