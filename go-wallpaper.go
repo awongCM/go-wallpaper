@@ -104,14 +104,17 @@ func GetListOfPictures(rootFolder string) []string {
 // AlternateWallPapers
 func AlternateWallPapers(wallpapper_files []string) {
 
-	// Keyboard interrupt here
+	// Keyboard interrupt intercepted here
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		endItHere()
+		retrieveCurrentlySetWallpaper()
 		os.Exit(1)
 	}()
+
+	timerIntervalSelected := TIMER_IN_MILLISECONDS
+	fmt.Println("timerIntervalSelected: ", timerIntervalSelected)
 
 	// loop forever until keyboard interrupt signal kicks in
 	for {
@@ -121,12 +124,12 @@ func AlternateWallPapers(wallpapper_files []string) {
 			SetCurrentWallpaper(wallpaperFile)
 
 			// test timer to set different wallpaper
-			time.Sleep(TIMER_IN_MILLISECONDS)
+			time.Sleep(timerIntervalSelected)
 		}
 	}
 }
 
-func endItHere() {
+func retrieveCurrentlySetWallpaper() {
 	fmt.Println("got keyboard interrupt...")
 
 	currentWallPaper, err := GetCurrentWallpaper()
