@@ -40,8 +40,8 @@ var OSMap = map[string]OperatingSystem{
 	},
 }
 
-// CheckOSEnviroment
-func CheckOSEnviroment() string {
+// CheckOSEnvironment
+func CheckOSEnvironment() string {
 	return OSMap[runtime.GOOS].osRuntime
 }
 
@@ -143,7 +143,7 @@ func retrieveCurrentlySetWallpaper() {
 
 func main() {
 
-	fmt.Println("Current running OS: ", CheckOSEnviroment())
+	fmt.Println("Current running OS: ", CheckOSEnvironment())
 
 	wallpaperLocation := GetDefaultLocation()
 
