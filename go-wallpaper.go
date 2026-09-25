@@ -21,7 +21,9 @@ func main() {
 
 	originalPath, err := backend.Get()
 	if err != nil {
-		log.Printf("read current wallpaper: %v", err)
+		log.Printf("read current wallpaper: %v (restore on exit will be skipped)", err)
+	} else if originalPath == "" {
+		log.Println("current wallpaper is not a local file path; restore on exit will be skipped")
 	} else {
 		log.Printf("saved original wallpaper: %s", originalPath)
 	}
